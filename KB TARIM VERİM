@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="KB AgTech: biyo-organik gübre ve toprak teknolojileri. Simülatör, ROI hesaplayıcı ve uygulama rehberi.">
+<title>KB AgTech - Biyo-Organik Gübre ve Toprak Teknolojileri</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌱%3C/text%3E%3C/svg%3E">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>
+tailwind.config={theme:{extend:{colors:{kb:{500:'#22c55e',600:'#16a34a',800:'#166534',900:'#14532d',accent:'#a3e635',dark:'#04170c'}},fontFamily:{sans:['Inter','system-ui','sans-serif']}}}};
+</script>
+<style>
+:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:calc(90px + env(safe-area-inset-top,0px))}
+body{font-family:Inter,system-ui,sans-serif;background:#04170c;color:#e2e8f0;margin:0}
+.glass{background:rgba(9,38,21,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(74,222,128,.2)}
+.hov{transition:.3s}.hov:hover{border-color:rgba(163,230,53,.5);transform:translateY(-4px)}
+.inp{width:100%;background:#0b1a12;border:1px solid #334155;color:#fff;border-radius:12px;padding:12px 14px}
+.inp:focus,button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #a3e635;outline-offset:2px}
+.lbl{display:block;font-size:.875rem;font-weight:500;color:#e2e8f0;margin-bottom:6px}
+.sec{padding:64px 0}.wrap{max-width:80rem;margin:0 auto;padding:0 16px}
+.eyebrow{color:#a3e635;font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+input[type=range]{-webkit-appearance:none;appearance:none;height:8px;background:#1e293b;border-radius:8px;width:100%}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#a3e635;border:2px solid #04170c}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#a3e635;border:2px solid #04170c}
+.modal.flex .box{animation:pop .2s ease-out}@keyframes pop{from{opacity:0;transform:scale(.95)}}
+.fab{position:fixed;right:max(24px,env(safe-area-inset-right,0px));bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:30}
+#printReport{display:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{body{background:#fff!important;color:#000!important}body>*:not(#printReport){display:none!important}#printReport{display:block!important;padding:32px;font-family:sans-serif}#printReport table{width:100%;border-collapse:collapse;margin-top:20px}#printReport td{padding:10px 14px;border-bottom:1px solid #ddd}}
+</style>
+</head>
+<body>
+<header class="sticky top-0 z-40 glass">
+  <div class="wrap flex items-center justify-between h-20">
+    <a href="#top" class="flex items-center gap-3"><span class="w-11 h-11 rounded-xl bg-gradient-to-tr from-kb-600 to-kb-accent flex items-center justify-center text-kb-dark font-black text-xl">KB</span><span><b class="text-2xl text-white font-black">KB</b> <small class="text-xs text-kb-accent border border-kb-500/30 rounded-full px-2 py-0.5">AGTECH</small></span></a>
+    <nav class="hidden md:flex gap-1 text-sm font-medium" id="nav" aria-label="Ana menü"></nav>
+    <div class="flex items-center gap-2">
+      <button data-open="quote-modal" class="hidden md:block bg-gradient-to-r from-kb-600 to-kb-500 text-white px-5 py-2.5 rounded-xl font-bold">Teklif İsteyin</button>
+      <button id="menuBtn" aria-label="Menü" aria-expanded="false" class="md:hidden p-2 text-slate-300"><i data-lucide="menu" class="w-6 h-6"></i></button>
+    </div>
+  </div>
+  <div id="mobileMenu" class="hidden md:hidden px-4 pb-5 space-y-1"></div>
+</header>
+
+<section id="top" class="pt-14 pb-16 text-center">
+  <div class="wrap">
+    <p class="inline-block glass rounded-full px-4 py-2 text-kb-accent text-sm font-semibold mb-6">Biyo-Organik Gübre Teknolojisi</p>
+    <h1 class="text-4xl sm:text-6xl font-black text-white leading-tight mb-6">Toprağın Gücünü <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-kb-accent">KB ile Açığa Çıkarın</span></h1>
+    <p class="max-w-2xl mx-auto text-lg text-slate-300 mb-10">KB mikrobiyolojik formülasyonları toprak mikrobiyotasını destekler, su tutulumuna katkı sağlar ve gübre maliyetlerini azaltmaya yardımcı olabilir.</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="#picker" class="px-8 py-4 rounded-xl bg-gradient-to-r from-kb-500 to-kb-accent text-kb-dark font-bold">Bana Uygun Ürünü Bul</a>
+      <a href="#roi" class="px-8 py-4 rounded-xl glass text-white font-semibold">ROI Hesapla</a>
+    </div>
+  </div>
+</section>
+
+<section id="simulator" class="sec"><div class="wrap">
+  <div class="text-center mb-10"><span class="eyebrow">Canlı Simülasyon</span><h2 class="text-3xl sm:text-4xl font-bold text-white">Toprak ve Verim Simülatörü</h2></div>
+  <div class="grid lg:grid-cols-12 gap-8">
+    <div class="lg:col-span-5 glass p-6 rounded-2xl space-y-6">
+      <div><div class="flex justify-between mb-2"><label for="soil" class="text-sm">Toprak Kalitesi</label><b id="soilVal" class="text-kb-accent"></b></div><input type="range" id="soil" min="10" max="100" value="30"></div>
+      <div><div class="flex justify-between mb-2"><label for="irr" class="text-sm">Sulama / Yağış</label><b id="irrVal" class="text-blue-400"></b></div><input type="range" id="irr" min="10" max="100" value="50"></div>
+      <div><div class="flex justify-between mb-2"><label for="dose" class="text-sm">KB Dozajı</label><b id="doseVal" class="text-kb-accent"></b></div><input type="range" id="dose" min="0" max="3" step="0.1" value="1.5"></div>
+      <div class="pt-4 border-t border-slate-700/50 flex flex-wrap gap-2" id="presets"></div>
+    </div>
+    <div class="lg:col-span-7 glass p-6 rounded-2xl">
+      <div class="grid sm:grid-cols-3 gap-4 mb-6">
+        <div class="bg-kb-900/60 p-4 rounded-xl text-center"><small class="text-slate-400 block">Verim Artışı</small><b id="mYield" class="text-3xl text-kb-accent"></b></div>
+        <div class="bg-kb-900/60 p-4 rounded-xl text-center"><small class="text-slate-400 block">Canlılık Skoru</small><b id="mHealth" class="text-3xl text-emerald-400"></b></div>
+        <div class="bg-kb-900/60 p-4 rounded-xl text-center"><small class="text-slate-400 block">Su Tutma</small><b id="mWater" class="text-3xl text-blue-400"></b></div>
+      </div>
+      <div class="relative w-full h-64"><canvas id="yieldChart" role="img" aria-label="Tahmini verim grafiği"></canvas></div>
+    </div>
+  </div>
+  <p class="text-center text-xs text-slate-500 mt-6">Simülatör genel varsayımlara dayalı, bilgilendirme amaçlı bir tahmindir; garanti vermez. Gerçek sonuçlar toprak, iklim ve uygulamaya göre değişir.</p>
+</div></section>
+
+<section id="picker" class="sec bg-kb-900/20"><div class="wrap max-w-3xl">
+  <div class="text-center mb-8"><span class="eyebrow">Ürün Seçici</span><h2 class="text-3xl sm:text-4xl font-bold text-white">Hangi KB Ürünü Bana Uygun?</h2></div>
+  <div class="glass rounded-2xl p-6 grid sm:grid-cols-2 gap-4">
+    <div><label class="lbl" for="pProb">En büyük sorununuz</label><select id="pProb" class="inp"><option value="0">Kuraklık / suyu tutmayan toprak</option><option value="1">Bitki stresi / zayıf gelişim</option><option value="2">Yüksek azot-fosfor maliyeti</option></select></div>
+    <div><label class="lbl" for="pStage">Uygulama zamanı</label><select id="pStage" class="inp"><option value="0">Ekim öncesi</option><option value="1">Gelişim dönemi (yapraktan)</option><option value="2">Damla sulama hattı</option></select></div>
+    <div id="pOut" class="sm:col-span-2 bg-kb-900/60 border border-kb-500/30 rounded-xl p-4 text-sm text-slate-200" aria-live="polite"></div>
+  </div>
+</div></section>
+
+<section id="products" class="sec"><div class="wrap">
+  <div class="text-center mb-10"><span class="eyebrow">Formülasyonlar</span><h2 class="text-3xl sm:text-4xl font-bold text-white">KB Ürün Serisi</h2></div>
+  <div id="productGrid" class="grid md:grid-cols-3 gap-8"></div>
+</div></section>
+
+<section id="roi" class="sec bg-kb-900/20"><div class="wrap">
+  <div class="glass rounded-3xl p-6 sm:p-10 grid lg:grid-cols-2 gap-10">
+    <div class="space-y-4">
+      <span class="eyebrow">Finansal Analiz</span><h2 class="text-3xl font-bold text-white">ROI ve Tasarruf Hesaplayıcı</h2>
+      <div><label class="lbl" for="roiCrop">Ürün Grubu</label><select id="roiCrop" class="inp"><option value="4000">Tarla Bitkileri</option><option value="10000">Meyve Bahçeleri</option><option value="20000">Sebze ve Sera</option></select></div>
+      <div class="grid sm:grid-cols-2 gap-4" id="roiFields"></div>
+      <button id="useSim" class="text-sm text-kb-accent underline underline-offset-4">Simülatördeki verim artışını kullan</button>
+      <p class="text-xs text-slate-500">Varsayılanlar örnektir; kendi değerlerinizi girin. Girdiğiniz değerler bu cihazda saklanır. KB maliyeti, simülatördeki dozaja göre hesaplanır.</p>
+    </div>
+    <div class="bg-slate-900/80 p-6 rounded-2xl border border-kb-500/30 space-y-4">
+      <div class="flex justify-between border-b border-slate-700/50 py-2"><span class="text-sm">Gübre Tasarrufu</span><b id="rSave" class="text-xl text-emerald-400"></b></div>
+      <div class="flex justify-between border-b border-slate-700/50 py-2"><span class="text-sm">Ek Rekolte Geliri</span><b id="rExtra" class="text-xl text-kb-accent"></b></div>
+      <div class="flex justify-between border-b border-slate-700/50 py-2"><span class="text-sm">KB Ürün Maliyeti</span><b id="rKb" class="text-slate-400"></b></div>
+      <div class="flex justify-between border-b border-slate-700/50 py-2"><span class="text-sm">Toplam KB İhtiyacı</span><b id="rLit" class="text-slate-300"></b></div>
+      <div class="bg-kb-500/20 p-4 rounded-xl text-center"><small class="uppercase tracking-wider text-slate-300">Tahmini Net Kazanç</small><b id="rNet" class="block text-4xl text-kb-accent"></b><small id="rRoi" class="text-emerald-300"></small></div>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button data-open="quote-modal" class="flex-1 bg-gradient-to-r from-kb-500 to-kb-accent text-kb-dark font-extrabold py-3.5 rounded-xl">Özel Teklif Alın</button>
+        <button id="printBtn" class="bg-slate-800 border border-slate-700 px-5 py-3.5 rounded-xl text-sm font-semibold">Raporu Yazdır</button>
+      </div>
+      <p class="text-xs text-slate-500">Hesaplama tahminidir, garanti vermez.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="guide" class="sec"><div class="wrap">
+  <div class="text-center mb-10"><span class="eyebrow">Uygulama Metodları</span><h2 class="text-3xl sm:text-4xl font-bold text-white">Saha Uygulama Rehberi</h2><p class="text-slate-400 mt-2">Dozaj ve karışım için daima ürün etiketine uyun.</p></div>
+  <div id="guideGrid" class="grid md:grid-cols-3 gap-8"></div>
+</div></section>
+
+<section id="faq" class="sec bg-kb-900/20"><div class="wrap max-w-4xl">
+  <div class="text-center mb-10"><span class="eyebrow">Merak Edilenler</span><h2 class="text-3xl sm:text-4xl font-bold text-white">Sıkça Sorulan Sorular</h2></div>
+  <div class="space-y-4" id="faqList"></div>
+</div></section>
+
+<footer class="glass py-10"><div class="wrap flex flex-col md:flex-row justify-between gap-4 text-sm text-slate-400"><span><b class="text-white">KB AgTech</b> · Sürdürülebilir Tarım Çözümleri</span><span>© 2026 KB AgTech. Tüm hakları saklıdır.</span></div></footer>
+
+<div class="fab"><button data-open="quote-modal" aria-label="Hızlı teklif" class="bg-gradient-to-r from-kb-500 to-kb-accent text-kb-dark p-4 rounded-full shadow-2xl"><i data-lucide="message-circle" class="w-6 h-6"></i></button></div>
+
+<div id="product-modal" class="modal fixed inset-0 z-50 hidden bg-black/80 items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="box glass bg-slate-900 max-w-lg w-full rounded-2xl p-6 relative">
+    <button data-close class="absolute top-4 right-4 text-slate-400" aria-label="Kapat"><i data-lucide="x" class="w-6 h-6"></i></button>
+    <h3 id="mTitle" class="text-2xl font-bold text-white mb-4 pr-8"></h3>
+    <p id="mDesc" class="text-sm text-slate-300 mb-4"></p>
+    <p class="text-sm text-emerald-400 bg-kb-900/50 p-2.5 rounded-lg">Ayrıntılı bileşim bilgisi için ürün etiketine bakınız.</p>
+    <div class="mt-6 text-right"><button data-close class="px-5 py-2.5 bg-slate-800 rounded-xl text-sm font-semibold">Kapat</button></div>
+  </div>
+</div>
+
+<div id="quote-modal" class="modal fixed inset-0 z-50 hidden bg-black/80 items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="qTitle">
+  <div class="box glass bg-slate-900 max-w-md w-full rounded-2xl p-6 relative">
+    <button data-close class="absolute top-4 right-4 text-slate-400" aria-label="Kapat"><i data-lucide="x" class="w-6 h-6"></i></button>
+    <h3 id="qTitle" class="text-2xl font-bold text-white mb-2">Özel Teklif Formu</h3>
+    <p class="text-xs text-slate-400 mb-5">Bilgileriniz ve hesap özetiniz WhatsApp üzerinden ekibimize iletilir.</p>
+    <form id="quoteForm" class="space-y-4" novalidate>
+      <div><label class="lbl" for="qName">Ad Soyad</label><input id="qName" class="inp" autocomplete="name"></div>
+      <div><label class="lbl" for="qPhone">Telefon</label><input id="qPhone" type="tel" class="inp" placeholder="05XX XXX XX XX" autocomplete="tel"></div>
+      <div><label class="lbl" for="qCity">Şehir / İlçe</label><input id="qCity" class="inp"></div>
+      <p id="qError" role="alert" class="hidden text-red-400 text-sm"></p>
+      <button type="submit" class="w-full bg-gradient-to-r from-kb-500 to-kb-accent text-kb-dark font-bold py-3 rounded-xl">WhatsApp ile Gönder</button>
+    </form>
+  </div>
+</div>
+
+<div id="printReport"><h1 style="font-size:22px;font-weight:bold">KB AgTech – Tahmini Maliyet ve Kazanç Raporu</h1><p style="font-size:12px;color:#666">Tarih: <span id="pDate"></span></p><table id="pTable"></table><p style="font-size:11px;margin-top:20px;color:#555">Değerler girilen varsayımlara dayalı tahminlerdir; garanti vermez.</p></div>
+
+<script>
+// ===== GÜVENLİ BAŞLATMA VE HATA KONTROLÜ =====
+const WHATSAPP_NUMBER="905000000000"; 
+const KB_PRICE_PER_L=200; 
+
+const $=id=>document.getElementById(id);
+const tl=n=>(n<0?"-":"")+"₺"+Math.round(Math.abs(n)).toLocaleString("tr-TR");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const NAV=[["simulator","Simülatör"],["picker","Ürün Seçici"],["products","Ürünler"],["roi","ROI"],["guide","Rehber"],["faq","SSS"]];
+document.addEventListener("DOMContentLoaded", () => {
+  if($("nav")) $("nav").innerHTML=NAV.map(n=>`<a href="#${n[0]}" class="px-3 py-2 rounded-lg hover:text-kb-accent">${n[1]}</a>`).join("");
+  if($("mobileMenu")) $("mobileMenu").innerHTML=NAV.map(n=>`<a href="#${n[0]}" class="block px-3 py-2.5 rounded-lg hover:text-kb-accent">${n[1]}</a>`).join("")+`<button data-open="quote-modal" class="w-full mt-2 bg-kb-500 text-kb-dark font-bold px-4 py-3 rounded-xl">Teklif İsteyin</button>`;
+  
+  if($("presets")) {
+    $("presets").innerHTML=PRESETS.map((p,i)=>`<button data-pre="${i}" class="px-3 py-1.5 bg-slate-800 text-xs rounded-lg border border-slate-700">${p[0]}</button>`).join("");
+  }
+  if($("productGrid")) {
+    $("productGrid").innerHTML=PRODUCTS.map((p,i)=>`<div class="glass hov rounded-2xl p-6 flex flex-col justify-between"><div>
+    <i data-lucide="${p.icon}" class="w-8 h-8 text-kb-accent mb-4"></i><span class="text-xs px-2.5 py-1 rounded-full bg-white/5 text-kb-accent">${p.tag}</span>
+    <h3 class="text-2xl font-bold text-white mt-3 mb-2">${p.name}</h3><p class="text-slate-300 text-sm mb-4">${p.text}</p>
+    <ul class="space-y-2 mb-4 text-sm text-slate-300">${p.bullets.map(b=>`<li>✓ ${b}</li>`).join("")}</ul></div>
+    <div class="border-t border-slate-700/50 pt-4 flex justify-between items-center"><div><small class="text-slate-400 block">Dozaj</small><b class="text-sm text-white">${p.dose}</b></div><button data-product="${i}" class="px-4 py-2 bg-kb-600/40 text-kb-accent rounded-lg text-sm font-semibold">İncele</button></div></div>`).join("");
+  }
+  if($("guideGrid")) {
+    $("guideGrid").innerHTML=GUIDE.map(g=>`<div class="glass rounded-2xl p-6 flex flex-col justify-between"><div>
+    <div class="flex justify-between mb-4"><span class="text-xs font-bold px-3 py-1 bg-white/5 text-kb-accent rounded-full">${g.badge}</span><i data-lucide="${g.icon}" class="w-6 h-6 text-kb-accent"></i></div>
+    <h3 class="text-xl font-bold text-white mb-2">${g.title}</h3><p class="text-slate-300 text-sm mb-4">${g.text}</p>
+    <div class="space-y-3 mb-6">${g.checks.map(c=>`<label class="flex gap-3 text-xs text-slate-300"><input type="checkbox" class="mt-0.5 w-4 h-4 accent-lime-400"><span>${c}</span></label>`).join("")}</div></div>
+    <div class="bg-slate-900/60 p-3 rounded-xl text-xs text-slate-400"><b class="text-kb-accent">İpucu:</b> ${g.tip}</div></div>`).join("");
+  }
+  if($("faqList")) {
+    $("faqList").innerHTML=FAQS.map((f,i)=>`<div class="glass rounded-xl p-5"><button class="w-full flex justify-between text-left font-semibold text-white" aria-expanded="false" aria-controls="fa${i}" data-faq="${i}"><span>${f[0]}</span><span class="ml-3 transition-transform" id="fi${i}" aria-hidden="true">⌄</span></button><p id="fa${i}" class="hidden text-sm text-slate-300 mt-3 pt-3 border-t border-slate-800">${f[1]}</p></div>`).join("");
+  }
+
+  // ROI Alanları
+  if($("roiFields")) {
+    let saved={};try{saved=JSON.parse(localStorage.getItem("kb-roi")||"{}")}catch(e){}
+    $("roiFields").innerHTML=FIELDS.map(f=>`<div><label class="lbl" for="${f[0]}">${f[1]}</label><input id="${f[0]}" type="number" inputmode="decimal" class="inp" min="${f[3]}" max="${f[4]}" value="${saved[f[0]]??f[2]}"></div>`).join("");
+    if(saved.crop&&[...$("roiCrop").options].some(o=>o.value===saved.crop))$("roiCrop").value=saved.crop;
+    
+    FIELDS.forEach(f=>$(f[0])?.addEventListener("input",calcROI));
+    $("roiCrop")?.addEventListener("change",()=>{$("roiIncome").value=$("roiCrop").value;calcROI()});
+    $("useSim")?.addEventListener("click",()=>{$("roiGain").value=Math.min(50,sim.y);calcROI()});
+  }
+
+  initChart();
+  updateSim();
+  pick();
+  
+  ["soil","irr","dose"].forEach(id=>$(id)?.addEventListener("input",updateSim));
+  ["pProb","pStage"].forEach(id=>$(id)?.addEventListener("change",pick));
+  
+  if(window.lucide) lucide.createIcons();
+});
+
+const PRODUCTS=[
+{icon:"shield-check",tag:"Toprak Düzenleyici",name:"KB Bio-Gel",text:"Yüksek hidrasyon kapasiteli biyo-jel. Kök bölgesinde nem tutulumunu destekler.",bullets:["Nem tutulumunu destekler","Faydalı mikroorganizma aktivitesine katkı","Toprak yapısını iyileştirmeye yardımcı olur"],dose:"1.0 - 1.5 L / Dönüm",desc:"Su tutma kapasitesini artırmaya yönelik biyo-jel tabanlı toprak düzenleyici."},
+{icon:"leaf",tag:"Yaprak Besleme",name:"KB Liquid Organic",text:"Enzim ve serbest aminoasit içeren sıvı biyo-organik gübre. Yapraktan veya damla ile uygulanır.",bullets:["Stres dönemlerinde bitkiyi destekler","Yaprak ve damla ile uygulanabilir","Meyve tutumu ve kaliteye katkı"],dose:"2.0 - 2.5 L / Dönüm",desc:"Bitkisel menşeili sıvı organik gübre; besin alımını ve gelişimi destekler."},
+{icon:"zap",tag:"Biyo-Azot Aşılayıcı",name:"KB Nitro-Boost",text:"Azot bağlayan ve fosfor çözen faydalı bakteri içeren biyolojik aşılayıcı.",bullets:["Azot ve fosfor alımını destekler","Kimyasal azot ihtiyacını azaltmaya yardımcı olabilir","Uzun süreli organik besleme"],dose:"1.0 L / Dönüm",desc:"Azot bağlayan ve fosfat çözen bakteriler içeren canlı biyo-aşılayıcı."}];
+const STAGES=["ekim öncesi uygulamada","gelişim döneminde yapraktan","damla sulama hattıyla"];
+const GUIDE=[
+{icon:"shovel",badge:"Aşama 1",title:"Ekim Öncesi Hazırlık",text:"Toprağın biyolojik yapısını canlandırmak için.",checks:["Son sürümden sonra KB Bio-Gel uygulayın.","Ürünü etiketteki oranda suyla karıştırın.","Güneşin dik olmadığı saatlerde uygulayın."],tip:"Gübre dozunu toprak analizine göre ayarlayın."},
+{icon:"wind",badge:"Aşama 2",title:"Yapraktan Uygulama",text:"Gelişim ve stres dönemlerinde yaprak yüzeyinden besleme.",checks:["4-6 yapraklı dönemde başlayın.","Ürünü etiket önerisine göre tanka ekleyin.","Rüzgârlı ve çok sıcak havada uygulamayın."],tip:"Karıştırmadan önce etiketi okuyun ve küçük çaplı uyumluluk denemesi yapın."},
+{icon:"waves",badge:"Aşama 3",title:"Damla Sulama ile Uygulama",text:"Sera ve damlama hatlarında kök bölgesine aktarım.",checks:["Sulamanın son bölümünde enjeksiyonu açın.","KB Nitro-Boost'u etiket aralığında tekrarlayın.","Sonrasında hatları temiz suyla durulayın."],tip:"Hat tıkanıklığını önlemek için durulamayı atlamayın."}];
+const FAQS=[
+["KB ürünleri kimyasal gübrelerle birlikte kullanılabilir mi?","Bu ürüne ve gübre cinsine göre değişir. Karışım yapmadan önce ürün etiketini okuyun, küçük çaplı deneme yapın veya ekibimize danışın."],
+["Saklama koşulları nelerdir?","Doğrudan güneş ışığından uzak, serin bir ortamda ve orijinal ambalajında saklayın. Raf ömrü ve sıcaklık aralığı için ürün etiketine bakın."],
+["Damla sulama sistemlerinde kullanılabilir mi?","Damla sulama uygulaması için ürüne özel etiket talimatına uyun. Uygulama sonrası hatları durulamanız önerilir."],
+["Etkiyi ne kadar sürede görürüm?","Süre ürüne, toprağa, iklime ve ürün cinsine göre değişir. Beklentinizi ekibimizle paylaşın, size uygun takip planı önerelim."]];
+
+// ===== SİMÜLATÖR =====
+let chart=null,sim={dose:1.5,y:0};
+const PRESETS=[["Kurak ve Zayıf Toprak",30,20,2],["Standart Tarla",60,50,1.5],["İyi Bakımlı Sera",80,80,1]];
+
+function initChart(){
+  if(!window.Chart || !$("yieldChart")) return;
+  const ctx=$("yieldChart").getContext("2d");
+  if(chart) chart.destroy();
+  const g=ctx.createLinearGradient(0,0,0,280);
+  g.addColorStop(0,"rgba(163,230,53,.5)");g.addColorStop(1,"rgba(163,230,53,0)");
+  chart=new Chart(ctx,{type:"line",data:{labels:["Ekim","Filiz","Gelişim","Çiçeklenme","Hasat"],datasets:[
+    {label:"KB ile (tahmini)",data:[],borderColor:"#a3e635",backgroundColor:g,borderWidth:3,fill:true,tension:.35},
+    {label:"Mevcut yöntem",data:[100,102,104,106,108],borderColor:"#64748b",borderDash:[5,5],pointRadius:0,tension:.2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:"#cbd5e1"}}},scales:{x:{ticks:{color:"#94a3b8"},grid:{color:"rgba(255,255,255,.05)"}},y:{ticks:{color:"#94a3b8",callback:v=>"%"+v},grid:{color:"rgba(255,255,255,.05)"}}}}});
+}
+function updateSim(){
+  if(!$("soil") || !$("irr") || !$("dose")) return;
+  const soil=+$("soil").value,irr=+$("irr").value,dose=+$("dose").value;
+  if($("soilVal")) $("soilVal").textContent=(soil<40?"Zayıf":soil<75?"Orta":"Çok İyi")+` (%${soil})`;
+  if($("irrVal")) $("irrVal").textContent=(irr<40?"Kısıtlı":irr<75?"Orta":"Yüksek")+` (%${irr})`;
+  if($("doseVal")) $("doseVal").textContent=dose.toFixed(1)+" L/Dönüm";
+  const y=Math.min(40,Math.round(dose*9*(1+(100-soil)/150)*(.7+irr/200)));
+  if($("mYield")) $("mYield").textContent="+%"+y;
+  if($("mHealth")) $("mHealth").textContent=Math.min(99,Math.round(soil*.5+dose*12+irr*.15))+"/100";
+  if($("mWater")) $("mWater").textContent="+%"+Math.round(dose*6*(1+(100-soil)/200));
+  sim={dose,y};
+  if(chart){const s=y/4;chart.data.datasets[0].data=[100,Math.round(100+s*.8),Math.round(100+s*1.8),Math.round(100+s*2.8),100+y];chart.update("none")}
+  calcROI();
+}
+
+// ===== ÜRÜN SEÇİCİ =====
+function pick(){
+  if(!$("pProb") || !$("pStage") || !$("pOut")) return;
+  const pr=+$("pProb").value,st=+$("pStage").value,p=PRODUCTS[pr];
+  $("pOut").innerHTML=`<b class="text-kb-accent text-base">${p.name}</b> (${p.dose})<br>${p.text}<br><span class="text-slate-400">Siz ${STAGES[st]} kullanmayı planlıyorsunuz.${pr===st?" Bu ürün seçtiğiniz zamana uygun.":" Uygulama zamanı için ürün etiketine ve aşağıdaki rehbere bakın."}</span>`;
+}
+
+// ===== ROI =====
+const FIELDS=[["roiArea","Arazi (Dönüm)",50,1,100000],["roiCost","Gübre Gideri (₺/Dönüm)",1200,0,1e6],["roiIncome","Sezonluk Gelir (₺/Dönüm)",4000,0,1e7],["roiGain","Beklenen Verim Artışı (%)",8,0,50],["roiSave","Beklenen Gübre Tasarrufu (%)",15,0,60]];
+let roi={};
+const num=f=>Math.min(f[4],Math.max(f[3],parseFloat($(f[0])?.value)||0));
+function calcROI(){
+  if(!$("roiArea")) return;
+  const v={};FIELDS.forEach(f=>v[f[0]]=num(f));
+  const lit=v.roiArea*sim.dose,kb=lit*KB_PRICE_PER_L;
+  const savings=v.roiArea*v.roiCost*v.roiSave/100,extra=v.roiArea*v.roiIncome*v.roiGain/100,net=savings+extra-kb;
+  roi={area:v.roiArea,savings,extra,kb,net,lit,pct:kb?Math.round(net/kb*100):null};
+  if($("rSave")) $("rSave").textContent=tl(savings);
+  if($("rExtra")) $("rExtra").textContent=tl(extra);
+  if($("rKb")) $("rKb").textContent=tl(kb);
+  if($("rLit")) $("rLit").textContent=Math.round(lit).toLocaleString("tr-TR")+" L";
+  if($("rNet")) $("rNet").textContent=tl(net);
+  if($("rRoi")) $("rRoi").textContent="ROI: "+(roi.pct===null?"—":"%"+roi.pct);
+  try{localStorage.setItem("kb-roi",JSON.stringify({...v,crop:$("roiCrop")?.value}))}catch(e){}
+}
+
+// ===== MODAL VE OLAYLAR =====
+let lastFocus=null;
+const openEl=()=>document.querySelector(".modal.flex");
+function openModal(id){lastFocus=document.activeElement;const m=$(id);if(!m)return;m.classList.remove("hidden");m.classList.add("flex");(m.querySelector("input,select")||m.querySelector("button"))?.focus()}
+function closeModals(){const was=openEl();document.querySelectorAll(".modal").forEach(m=>{m.classList.add("hidden");m.classList.remove("flex")});if(was&&lastFocus)lastFocus.focus()}
+
+document.addEventListener("click",e=>{
+  if(e.target.classList&&e.target.classList.contains("modal"))return closeModals();
+  const t=e.target.closest("[data-open],[data-close],[data-product],[data-faq],[data-pre]");
+  if(!t)return;const d=t.dataset;
+  if(d.open){$("mobileMenu")?.classList.add("hidden");$("menuBtn")?.setAttribute("aria-expanded","false");openModal(d.open)}
+  else if(d.close!==undefined)closeModals();
+  else if(d.product){const p=PRODUCTS[d.product];if(p){$("mTitle").textContent=p.name;$("mDesc").textContent=p.desc;openModal("product-modal")}}
+  else if(d.faq){const a=$("fa"+d.faq);if(a){const o=a.classList.toggle("hidden");t.setAttribute("aria-expanded",String(!o));if($("fi"+d.faq)) $("fi"+d.faq).style.transform=o?"":"rotate(180deg)"}}
+  else if(d.pre){const p=PRESETS[d.pre];if(p && $("soil")){ $("soil").value=p[1];$("irr").value=p[2];$("dose").value=p[3];updateSim(); }}
+});
+
+document.addEventListener("keydown",e=>{
+  const m=openEl();if(!m)return;
+  if(e.key==="Escape")return closeModals();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const menuBtn = $("menuBtn");
+  const mobileMenu = $("mobileMenu");
+  if(menuBtn && mobileMenu) {
+    menuBtn.onclick = () => { const h = mobileMenu.classList.toggle("hidden"); menuBtn.setAttribute("aria-expanded", String(!h)); };
+    mobileMenu.addEventListener("click", e => { if (e.target.closest("a")) { mobileMenu.classList.add("hidden"); menuBtn.setAttribute("aria-expanded", "false"); } });
+  }
+});
+
+// WhatsApp teklifi
+document.addEventListener("submit",e=>{
+  if(e.target && e.target.id === "quoteForm") {
+    e.preventDefault();
+    const name=$("qName")?.value.trim()||"",phone=$("qPhone")?.value.trim()||"",city=$("qCity")?.value.trim()||"",err=$("qError");
+    const bad=name.length<2?"Lütfen ad soyadınızı girin.":phone.replace(/\D/g,"").length<10?"Lütfen geçerli bir telefon numarası girin.":"";
+    if(err){ err.textContent=bad; err.classList.toggle("hidden",!bad); }
+    if(bad)return;
+    const msg=`Merhaba KB AgTech Ekibi, teklif talebinde bulunuyorum.\n\n*Ad Soyad:* ${name}\n*Telefon:* ${phone}\n*Şehir/İlçe:* ${city||"-"}\n*Arazi:* ${roi.area||50} Dönüm\n*Tahmini KB ihtiyacı:* ${Math.round(roi.lit||0)} L\n*Tahmini gübre tasarrufu:* ${tl(roi.savings||0)}\n*Tahmini net kazanç:* ${tl(roi.net||0)} / Sezon\n\nÜrün teklifi ve fiyat detaylarını görüşmek istiyorum.`;
+    const url="https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(msg);
+    const w=window.open(url,"_blank");
+    if(!w){if(err){err.innerHTML=`Açılır pencere engellendi. <a class="underline" href="${esc(url)}" target="_blank" rel="noopener">WhatsApp'ı buradan açın</a>.`;err.classList.remove("hidden");}return}
+    w.opener=null;closeModals();
+  }
+});
+
+// Yazdır
+document.addEventListener("click", e => {
+  if(e.target && e.target.id === "printBtn") {
+    if($("pDate")) $("pDate").textContent=new Date().toLocaleDateString("tr-TR");
+    const rows=[["Arazi", (roi.area||50)+" Dönüm"],["Tahmini KB ihtiyacı", Math.round(roi.lit||0)+" L"],["Gübre Tasarrufu", tl(roi.savings||0)],["Ek Rekolte Geliri", tl(roi.extra||0)],["KB Ürün Maliyeti", tl(roi.kb||0)],["Net Kazanç", tl(roi.net||0)+" / Sezon"],["ROI", roi.pct===null?"—":"%"+roi.pct]];
+    if($("pTable")) $("pTable").innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td><b>${r[1]}</b></td></tr>`).join("");
+    window.print();
+  }
+});
+</script>
+</body>
+</html>
